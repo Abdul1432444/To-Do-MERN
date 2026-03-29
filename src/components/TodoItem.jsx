@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import API from "../../api";
 
 const TodoItem = ({ todo, fetchTodos }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -9,7 +10,7 @@ const TodoItem = ({ todo, fetchTodos }) => {
 
   const handleCompleted = async () => {
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`, {
+      await axios.put(`${API}/api/todos/${todo._id}`, {
         completed: !todo.completed,
       });
       fetchTodos();
@@ -20,9 +21,7 @@ const TodoItem = ({ todo, fetchTodos }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`,
-      );
+      await axios.delete(`${API}/api/todos/${todo._id}`);
       fetchTodos();
     } catch (error) {
       console.log("error during deleting", error);
@@ -33,7 +32,7 @@ const TodoItem = ({ todo, fetchTodos }) => {
     if (!editTitle.trim()) return;
 
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`, {
+      await axios.put(`${API}/api/todos/${todo._id}`, {
         title: editTitle,
       });
       setIsEditing(false);
