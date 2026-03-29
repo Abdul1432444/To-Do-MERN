@@ -2,15 +2,14 @@ import axios from "axios";
 import React, { useState } from "react";
 
 const TodoItem = ({ todo, fetchTodos }) => {
-  // state to track if we are in edit mode
   const [isEditing, setIsEditing] = useState(false);
-
-  // state to store the edited title
   const [editTitle, setEditTitle] = useState(todo.title);
+
+  const API = import.meta.env.VITE_API_URL;
 
   const handleCompleted = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/todos/${todo._id}`, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`, {
         completed: !todo.completed,
       });
       fetchTodos();
@@ -21,7 +20,9 @@ const TodoItem = ({ todo, fetchTodos }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/todos/${todo._id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`,
+      );
       fetchTodos();
     } catch (error) {
       console.log("error during deleting", error);
@@ -29,14 +30,12 @@ const TodoItem = ({ todo, fetchTodos }) => {
   };
 
   const handleEdit = async () => {
-    // if input is empty do nothing
     if (!editTitle.trim()) return;
+
     try {
-      // send updated title to backend
-      await axios.put(`http://localhost:5000/api/todos/${todo._id}`, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/todos/${todo._id}`, {
         title: editTitle,
       });
-      // exit edit mode after saving
       setIsEditing(false);
       fetchTodos();
     } catch (error) {
@@ -46,7 +45,6 @@ const TodoItem = ({ todo, fetchTodos }) => {
 
   return (
     <div className="flex items-center justify-between p-3 mb-3 border border-gray-200 rounded-lg hover:shadow-md transition">
-      {/* if editing show input, otherwise show title */}
       {isEditing ? (
         <input
           type="text"
@@ -65,18 +63,17 @@ const TodoItem = ({ todo, fetchTodos }) => {
       )}
 
       <div className="flex gap-2 ml-4">
-        {/* show save/cancel buttons when editing, otherwise show all buttons */}
         {isEditing ? (
           <>
             <button
               onClick={handleEdit}
-              className="text-sm px-3 py-1 cursor-pionter rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition"
+              className="text-sm px-3 py-1 bg-blue-500 text-white rounded-lg"
             >
               Save
             </button>
             <button
               onClick={() => setIsEditing(false)}
-              className="text-sm px-3 py-1 rounded-lg cursor-pointer bg-gray-400 hover:bg-gray-500 text-white transition"
+              className="text-sm px-3 py-1 bg-gray-400 text-white rounded-lg"
             >
               Cancel
             </button>
@@ -85,23 +82,19 @@ const TodoItem = ({ todo, fetchTodos }) => {
           <>
             <button
               onClick={() => setIsEditing(true)}
-              className="text-sm px-3 py-1 cursor-pointer rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition"
+              className="text-sm px-3 py-1 bg-blue-500 text-white rounded-lg"
             >
               Edit
             </button>
             <button
               onClick={handleCompleted}
-              className={`text-sm px-3 py-1 rounded-lg cursor-pointer transition ${
-                todo.completed
-                  ? "bg-yellow-400 hover:bg-yellow-500 text-white"
-                  : "bg-green-500 hover:bg-green-600 text-white"
-              }`}
+              className="text-sm px-3 py-1 bg-green-500 text-white rounded-lg"
             >
               {todo.completed ? "Undo" : "Complete"}
             </button>
             <button
               onClick={handleDelete}
-              className="text-sm px-3 py-1 cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 text-white transition"
+              className="text-sm px-3 py-1 bg-red-500 text-white rounded-lg"
             >
               Delete
             </button>
